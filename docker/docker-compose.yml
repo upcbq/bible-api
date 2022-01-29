@@ -8,8 +8,8 @@ services:
     image: bibleapi
     container_name: bibleapi
     restart: unless-stopped
-    networks:
-      - app-network
+    ports:
+      - ${PORT}:${PORT}
     environment:
       - APP
       - PORT
@@ -21,36 +21,3 @@ services:
       - DB_NAME
       - DB_USER
       - DB_PASSWORD
-
-  webserver:
-    build:
-      context: ./nginx/
-      dockerfile: ./Dockerfile
-      args:
-        HOSTNAME: ${HOSTNAME}
-        PORT: ${PORT}
-    image: webserver
-    container_name: webserver
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - web-root:/var/www/html
-      - nginx_secrets:/etc/letsencrypt
-    depends_on:
-      - bibleapi
-    networks:
-      - app-network
-    environment:
-      - PORT
-      - HOSTNAME
-      - CERTBOT_EMAIL
-
-volumes:
-  web-root:
-  nginx_secrets:
-
-networks:
-  app-network:
-    driver: bridge
