@@ -1,3 +1,4 @@
+import config from '@/config/config';
 import swaggerJSDoc from 'swagger-jsdoc';
 
 /**
@@ -19,9 +20,9 @@ export const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Gift List API',
+      title: 'Bible API',
       version: '0.1.0',
-      description: 'An api for creating and managing gift lists using express and monboose',
+      description: 'An api for fetching individual or multiple bible verses',
       license: {
         name: 'MIT',
         url: 'https://spdx.org/licenses/MIT.html',
@@ -29,7 +30,7 @@ export const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000/',
+        url: config.EXTERNAL_URL,
       },
     ],
   },

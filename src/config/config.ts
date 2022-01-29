@@ -4,6 +4,7 @@ dotenv.config();
 export default {
   APP: process.env.APP || 'development',
   PORT: process.env.PORT || '3000',
+  EXTERNAL_URL: process.env.EXTERNAL_URL || 'http://localhost:3000',
 
   DB_DIALECT: process.env.DB_DIALECT || 'mongo',
   DB_HOST: process.env.DB_HOST || 'mongodb://server:port/database',

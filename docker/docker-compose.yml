@@ -1,0 +1,66 @@
+version: '3'
+
+services:
+  bibleapi:
+    build:
+      context: ../
+      dockerfile: ./docker/node/Dockerfile
+    image: bibleapi
+    container_name: bibleapi
+    restart: unless-stopped
+    networks:
+      - app-network
+    environment:
+      - APP
+      - PORT
+      - EXTERNAL_URL
+      - HOSTNAME
+      - DB_DIALECT
+      - DB_HOST
+      - DB_PORT
+      - DB_NAME
+      - DB_USER
+      - DB_PASSWORD
+
+  webserver:
+    build:
+      context: ./nginx/
+      dockerfile: ./Dockerfile
+      args:
+        HOSTNAME: ${HOSTNAME}
+        PORT: ${PORT}
+    image: webserver
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - web-root:/var/www/html
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - bibleapi
+    networks:
+      - app-network
+    environment:
+      - PORT
+      - HOSTNAME
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - webserver
+    command: certonly --webroot --webroot-path=/var/www/html --email ${CERTBOT_EMAIL} --agree-tos --no-eff-email --staging -d ${HOSTNAME}
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+
+networks:
+  app-network:
+    driver: bridge
