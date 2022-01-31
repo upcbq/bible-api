@@ -37,6 +37,7 @@ export interface IVerseJson {
   book: string;
   chapter: number;
   verse: number;
+  translation: string;
   text: string;
 }
 
@@ -55,6 +56,10 @@ export const VerseSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    translation: {
+      type: String,
+      required: true,
+    },
     text: {
       type: String,
       required: true,
@@ -67,7 +72,9 @@ export const VerseSchema = new mongoose.Schema(
   },
 );
 
-VerseSchema.index({ book: 1, chapter: 1, verse: 1 }, { unique: true });
+VerseSchema.index({ book: 1, chapter: 1, verse: 1, translation: 1 }, { unique: true });
+VerseSchema.index({ book: 1, chapter: 1, verse: 1 });
+VerseSchema.index({ book: 1, chapter: 1 });
 
 VerseSchema.set('toJSON', {
   transform(doc, ret, options) {

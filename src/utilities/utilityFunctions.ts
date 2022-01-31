@@ -12,6 +12,6 @@ export function byteToNumber(text: string): number {
   return NaN;
 }
 
-export function referenceToString(ref: IReference) {
-  return `${ref.book} ${ref.chapter}:${ref.verse}`;
+export function referenceToString(ref: Partial<IReference>) {
+  return `${ref.book} ${ref.chapter || ''}${ref.verse ? `:${ref.verse}` : ''}`;
 }

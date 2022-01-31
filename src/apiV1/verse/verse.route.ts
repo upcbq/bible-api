@@ -30,12 +30,45 @@ export const verseRouter: Router = Router();
  *         schema:
  *           type: integer
  *         required: true
+ *       - in: query
+ *         name: translation
+ *         schema:
+ *           type: string
  *     responses:
  *       '200':
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Verse'
+ * /v1/verse/{book}/{chapter}:
+ *   get:
+ *     tags:
+ *       - Verse
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: book
+ *         schema:
+ *           type: string
+ *         required: true
+ *       - in: path
+ *         name: chapter
+ *         schema:
+ *           type: integer
+ *         required: true
+ *       - in: query
+ *         name: translation
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Verse'
  *
  * /v1/verse:
  *   post:
@@ -57,5 +90,7 @@ export const verseRouter: Router = Router();
 
 // Get one verse
 verseRouter.get('/:book/:chapter/:verse', controller.getVerse);
+// Get one chapter
+verseRouter.get('/:book/:chapter', controller.getChapter);
 // Get multiple verses
 verseRouter.post('', validateRequestBody(FetchVersesRequest), controller.getVerses);

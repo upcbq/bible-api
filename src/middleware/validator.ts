@@ -54,6 +54,23 @@ export function validateRequestBody<T>(requestBodyClass: new (...args: any[]) =>
   };
 }
 
-export function validateReference(ref: IReference): boolean {
-  return !!(ChapterVerseCount[ref.book] && ChapterVerseCount[ref.book][ref.chapter] >= ref.verse) && ref.verse > 0;
+export function validateReference(ref: Partial<IReference>): boolean {
+  if ((ref.verse && (!ref.chapter || !ref.book)) || (ref.chapter && !ref.book)) {
+    return false;
+  }
+  if (ref.book && !ChapterVerseCount[ref.book]) {
+    return false;
+  }
+  if (ref.book && ref.chapter && ChapterVerseCount[ref.book][ref.chapter] === undefined) {
+    return false;
+  }
+  if (
+    ref.book &&
+    ref.chapter &&
+    ref.verse &&
+    (ChapterVerseCount[ref.book][ref.chapter] < ref.verse || ref.verse <= 0)
+  ) {
+    return false;
+  }
+  return true;
 }
