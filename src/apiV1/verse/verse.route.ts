@@ -40,6 +40,7 @@ export const verseRouter: Router = Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Verse'
+ *
  * /v1/verse/{book}/{chapter}:
  *   get:
  *     tags:
