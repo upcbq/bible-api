@@ -30,6 +30,7 @@ export interface IVerse extends mongoose.Document {
   book: string;
   chapter: number;
   verse: number;
+  translation: string;
   text: string;
 }
 
