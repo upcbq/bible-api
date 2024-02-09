@@ -3,6 +3,7 @@ import { BookShortNameMap, TRANSLATIONS } from '@/utilities/constants/bible.cons
 import fs from 'fs';
 import '@/config/db';
 import { referenceToString } from '@/utilities/utilityFunctions';
+import { IReference } from '@/types/utility/reference';
 
 function convertRef(ref: string): { book: string; chapter: number; verse: number } {
   try {
@@ -27,12 +28,20 @@ function convertRef(ref: string): { book: string; chapter: number; verse: number
   }
 }
 
+function buildId(verse: IVerse | IReference) {
+  return `${verse.book}-${verse.chapter}-${verse.verse}`;
+}
+
 (async () => {
   try {
     for (const translation of TRANSLATIONS) {
       const bibleFile = fs.readFileSync(`./data/bible-versions/${translation}.txt`, 'utf8').split('\n').filter(Boolean);
 
-      const verses: Array<IVerse> = [];
+      const verseMap: Record<string, IVerse> = {};
+      const existingVerses = (await Verse.find({ translation }).exec()).reduce((map, v) => {
+        map[buildId(v)] = v;
+        return map;
+      }, {} as Record<string, IVerse>);
 
       let book = '';
 
@@ -57,15 +66,30 @@ function convertRef(ref: string): { book: string; chapter: number; verse: number
           continue;
         }
 
-        verses.push(
-          new Verse({
-            ...ref,
-            text,
-            translation,
-          }),
-        );
+        verseMap[buildId(ref)] = new Verse({
+          ...ref,
+          text,
+          translation,
+        });
       }
-      await Verse.insertMany(verses);
+
+      const verses = Object.values(verseMap);
+      const versesToUpdate = verses.filter((v) => existingVerses[buildId(v)]?.text !== v.text);
+      if (!versesToUpdate.length) {
+        console.log(`nothing to update for ${translation}`);
+        continue;
+      }
+      if (versesToUpdate.length < verses.length) {
+        console.log(`filtered from ${verses.length} to ${versesToUpdate.length} verses`);
+      }
+
+      const versesToDrop = Object.values(versesToUpdate)
+        .map((v) => existingVerses[buildId(v)])
+        .filter((v) => !!v);
+      await Verse.deleteMany({ _id: versesToDrop.map((v) => v._id) }).exec();
+      console.log(`dropped ${versesToDrop.length} verses`);
+
+      await Verse.insertMany(versesToUpdate);
       console.log(`inserted translation ${translation}`);
     }
     console.log('success');
