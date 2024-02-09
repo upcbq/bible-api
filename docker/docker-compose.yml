@@ -5,7 +5,7 @@ services:
     build:
       context: ../
       dockerfile: ./docker/node/Dockerfile
-    image: bibleapi
+    image: registry.docker.upcbq.com:443/bibleapi:${TAG:-latest}
     container_name: bibleapi
     restart: unless-stopped
     ports:

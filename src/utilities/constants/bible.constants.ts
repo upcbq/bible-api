@@ -1462,4 +1462,4 @@ export const BookShortNameMap = {
 
 export const DEFAULT_TRANSLATION = 'kjv';
 
-export const TRANSLATIONS = ['kjv', 'asv', 'bbe', 'web', 'ylt'];
+export const TRANSLATIONS = ['kjv', 'asv', 'bbe', 'web', 'ylt', 'akjv', 'tcnt'];

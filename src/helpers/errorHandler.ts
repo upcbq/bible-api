@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import { FieldValidationError, validationResult } from 'express-validator';
 import httpStatus from 'http-status';
 
 // handle not found errors
@@ -40,7 +40,9 @@ export const internalServerError = (err: ServerError | any, req: Request, res: R
 export const handleValidationError = (req: Request, res: Response, next: NextFunction) => {
   const errors = validationResult(req);
   const transformedErrors = errors.array().map((value) => ({
-    message: `${value.msg}: ${value.param} cannot be ${value.value}.`,
+    message: `${value.msg}: ${(value as FieldValidationError).path} cannot be ${
+      (value as FieldValidationError).value
+    }.`,
   }));
   if (!errors.isEmpty()) {
     return res.status(httpStatus.BAD_REQUEST).json({ errors: transformedErrors });
