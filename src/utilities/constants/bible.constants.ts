@@ -1320,7 +1320,7 @@ export const ChapterVerseCount = {
     21: 27,
     22: 21,
   },
-};
+} as const;
 
 export const ORDERED_BOOKS = [
   'genesis',
@@ -1389,7 +1389,9 @@ export const ORDERED_BOOKS = [
   '3-john',
   'jude',
   'revelation',
-];
+] as const;
+
+export type Book = (typeof ORDERED_BOOKS)[number];
 
 export const BookShortNameMap = {
   Gen: 'genesis',
@@ -1458,7 +1460,7 @@ export const BookShortNameMap = {
   '3John': '3-john',
   Jude: 'jude',
   Rev: 'revelation',
-};
+} as const satisfies Record<string, Book>;
 
 export const DEFAULT_TRANSLATION = 'kjv';
 
