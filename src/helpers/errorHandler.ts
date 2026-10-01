@@ -50,7 +50,6 @@ export const handleValidationError = (req: Request, res: Response, next: NextFun
   next();
 };
 
-// eslint-disable-next-line
 export interface ServerError {
   message: string;
   status?: number;
@@ -58,7 +57,6 @@ export interface ServerError {
 }
 
 export class ServerError {
-  // eslint-disable-next-line
   public readonly _type? = 'ServerError';
   constructor(err: ServerError) {
     this.message = err.message;

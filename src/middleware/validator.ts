@@ -21,7 +21,6 @@ const validatorOptions: ValidatorOptions = {
  *
  * @param requestBodyClass
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
 export function validateRequestBody<T extends object>(requestBodyClass: new (...args: any[]) => T) {
   return async (req: Request, res: Response, next: NextFunction) => {
     const request = new requestBodyClass(req.body);

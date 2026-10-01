@@ -5,8 +5,6 @@ import CONFIG from './config';
 export default (async () => {
   try {
     await mongoose.connect(CONFIG.DB_HOST, {
-      useUnifiedTopology: true,
-      useNewUrlParser: true,
       user: CONFIG.DB_USER,
       pass: CONFIG.DB_PASSWORD,
     });
